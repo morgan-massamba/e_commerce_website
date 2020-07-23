@@ -50,7 +50,7 @@ class UI {
                     class='product-img'>
                     <button class="bag-btn" data-id=${product.id}>
                         <i class="fas fa-shopping-cart"></i>
-                        add to basket
+                        add to cart
                     </button>
                 </div>
                 <h3>${product.title}</h3>
@@ -142,6 +142,36 @@ class UI {
   populateCart(cart){
     cart.forEach(item => this.addCartItem(item));
   }
+  
+  cartLogic(){
+    // clear cart button
+    clearcartBtn.addEventListener('click', () => {
+      this.clearCart();
+    })
+    // cart functionality
+
+  }
+  clearCart(){
+    let cartItems = cart.map(item => item.id);
+    cartItems.forEach(id => this.removeItem(id));
+    while (cartContent.children.length > 0) {
+      cartContent.removeChild(cartContent.children[0]);
+    }
+    this.hideCart();
+  }
+
+  removeItem(id){
+    cart = cart.filter(item => item.id !== id);
+    this.setCartValues(cart);
+    Storage.saveCart(cart);
+    let button = this.getSingleButton(id);
+    button.disabled = false;
+    button.innerHTML = ` <i class="fas fa-shopping-cart"></i>
+    add to cart `;
+  }
+  getSingleButton(id){
+    return buttonsDOM.find(button => button.dataset.id === id);
+  }
 }
 
 
@@ -178,5 +208,6 @@ document.addEventListener("DOMContentLoaded", () => {
       })
     .then( () => {
       ui.getBagButtons();
+      ui.cartLogic();
     });
 });
